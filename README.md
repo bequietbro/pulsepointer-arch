@@ -54,12 +54,6 @@ Clone the repository:
 ```bash
 git clone https://github.com/bequietbro/pulsepointer-arch.git
 cd pulsepointer-arch
-```
-
-Make the installer executable and launch it:
-
-```bash
-chmod +x install.sh
 ./install.sh
 ```
 
