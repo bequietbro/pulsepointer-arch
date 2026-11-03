@@ -47,7 +47,7 @@ Other Wayland compositors are not supported.
 - Internet connection for installing dependencies and downloading Rust dependencies during the first build.
 - `sudo` privileges.
 
-### Installation
+### Quick start
 
 ```bash
 git clone https://github.com/bequietbro/pulsepointer-arch.git
