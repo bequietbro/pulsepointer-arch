@@ -1,6 +1,8 @@
 # PulsePointer
 
-pulsepointer_example.webm
+[pulsepointer_example.webm](https://github.com/user-attachments/assets/e91d36bb-18a7-48e4-85da-b2df4e3bec0a)
+
+[![CI](https://github.com/simonskrede/pulsepointer/actions/workflows/ci.yml/badge.svg)](https://github.com/simonskrede/pulsepointer/actions/workflows/ci.yml)
 
 PulsePointer makes the mouse pointer react to system audio in KDE Plasma 6. The default elastic mode expands and squashes the current cursor and can emit a ring on detected beats. Wobble cursor, spectrum halo, level bar, waveform circle, spectrum, and oscilloscope modes are also included.
 
