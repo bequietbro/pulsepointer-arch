@@ -204,7 +204,7 @@ install_pulsepointer() {
 
     cmake --build "$build_dir" --parallel
 
-    printf \n${CYAN}[5/6]${RESET} Preparing staged installation...\n
+    printf "\n${CYAN}[5/6]${RESET} Preparing staged installation...\n"
     install -Dm755 \
         "${PROJECT_DIR}/target/release/pulsepointer" \
         "${stage_dir}/usr/bin/pulsepointer"
