@@ -23,7 +23,7 @@ The Rust daemon captures the default PulseAudio monitor (including PipeWire's Pu
 
 ## Install on Kubuntu 26.04 or 26.10
 
-Release builds target Ubuntu 26.04 and 26.10 on `amd64`. Download the package matching your Ubuntu/Kubuntu release from the [latest release](https://github.com/simonskrede/pulsepointer/releases) and install it.
+Release builds target Ubuntu 26.04 and 26.10 on `amd64`. Download the package matching your Ubuntu/Kubuntu release from the [latest release](https://github.com/simonskrede/pulsepointer/releases/latest) and install it.
 
 For example, on 26.04:
 
@@ -205,7 +205,7 @@ Or build the Wayland and X11 packages together:
 ./packaging/build-deb.sh
 ```
 
-The script does not install anything and writes native-architecture packages to `dist/`. GitHub's release workflow runs this build for Ubuntu 26.04 and 26.10 on `amd64`. Release revisions and additional distribution targets are documented in [distribution-packaging.md](distribution-packaging.md).
+The script does not install anything and writes native-architecture packages to `dist/`. GitHub's release workflow runs this build for Ubuntu 26.04 and 26.10 on `amd64`. Release revisions and additional distribution targets are documented in [distribution-packaging.md](docs/distribution-packaging.md).
 
 ## Development checks
 
@@ -218,7 +218,7 @@ cargo test --locked
 ./packaging/build-deb.sh --wayland-only
 ```
 
-The IPC format is documented in [ipc-protocol.md](ipc-protocol.md).
+The IPC format is documented in [ipc-protocol.md](docs/ipc-protocol.md).
 
 ## Scope and security
 
