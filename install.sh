@@ -330,6 +330,7 @@ install_pulsepointer() {
         sudo install -d "$(dirname -- "$destination")"
         sudo rm -f -- "$destination"
         sudo cp -a -- "${stage_dir}/${rel}" "$destination"
+        sudo chown -h root:root -- "$destination"
     done
 
     # Keep only backups for files still owned by the new installation.
