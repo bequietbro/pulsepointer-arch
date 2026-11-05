@@ -58,9 +58,14 @@ Unlike the Ubuntu packages, the Arch installation builds PulsePointer locally ag
 | KWin | 6.6, 6.7, 6.8 |
 | Qt | Qt 6 |
 | Wayland | Supported |
-| X11 | Build and installation path included; practical testing pending |
+| X11 | Requires a distribution providing `kwin-x11`; desktop testing pending |
 
 Tested configuration: CachyOS, KDE Plasma 6, KWin 6.8.2, Wayland.
+
+Current Arch Plasma 6.8 packages support Wayland. The X11 installation path
+is for compatible distributions that still provide `kwin-x11`; the installer
+stops before changing files if that package is neither installed nor available
+in your repositories. See [Arch's KDE documentation](https://wiki.archlinux.org/title/KDE#Starting_Plasma).
 
 Other Wayland compositors are not supported.
 

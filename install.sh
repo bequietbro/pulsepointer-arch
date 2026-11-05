@@ -112,6 +112,12 @@ install_pulsepointer() {
     local session_type
     session_type="$(detect_session)"
 
+    if [[ "$session_type" == "x11" ]] &&
+       ! pacman -Q kwin-x11 >/dev/null 2>&1 &&
+       ! pacman -Si kwin-x11 >/dev/null 2>&1; then
+        die "KWin X11 (kwin-x11) is not installed or available in your repositories. Run this installer from Plasma Wayland, or install a compatible KWin X11 package first."
+    fi
+
     local build_dir="${PROJECT_DIR}/target/arch-kwin-${session_type}"
 
     # The previous installer did not keep a system-wide ownership manifest.
@@ -160,7 +166,11 @@ install_pulsepointer() {
         packages+=(kwin)
         cmake_options[0]="-DPULSEPOINTER_BUILD_KWIN_WAYLAND=ON"
     else
-        packages+=(kwin-x11)
+        # A compatible distribution may retain an installed KWin X11 package
+        # even after it is no longer available in its package repositories.
+        if ! pacman -Q kwin-x11 >/dev/null 2>&1; then
+            packages+=(kwin-x11)
+        fi
         cmake_options[1]="-DPULSEPOINTER_BUILD_KWIN_X11=ON"
     fi
 
