@@ -1,22 +1,52 @@
-# PulsePointer for Arch Linux
+# PulsePointer
 
-**PulsePointer for Arch Linux** is an Arch Linux port of [PulsePointer](https://github.com/simonskrede/pulsepointer), bringing audio-reactive mouse cursor visualizations to KDE Plasma 6.
+pulsepointer_example.webm
 
-This fork adapts the original project for Arch Linux and Arch-based distributions, with a unified installation script that automatically detects the graphical session, installs the required dependencies, builds the project locally, and installs the necessary files.
+PulsePointer makes the mouse pointer react to system audio in KDE Plasma 6. The default elastic mode expands and squashes the current cursor and can emit a ring on detected beats. Wobble cursor, spectrum halo, level bar, waveform circle, spectrum, and oscilloscope modes are also included.
 
-## Features
+## Supported environments
 
-- All original PulsePointer visualization modes.
-- Native KDE Plasma 6 KWin effect.
-- Rust audio-processing daemon.
-- Wayland and X11 installation paths.
-- Automatic graphical session detection.
-- Automatic dependency installation using pacman.
-- Local compilation optimized for the installed system.
-- Interactive installation and complete uninstallation.
-- No AUR, PKGBUILD, or prebuilt packages required.
+| Environment | Support |
+|---|---|
+| Kubuntu 26.04 LTS, Plasma Wayland | Supported |
+| Kubuntu 26.04 LTS, Plasma X11 | Optional companion package |
+| Kubuntu 26.10, Plasma Wayland | Supported |
+| Kubuntu 26.10, Plasma X11 | Optional companion package |
+| Arch Linux and compatible Arch-based distributions | Supported |
+| KDE Plasma 6 / KWin 6.6, 6.7, 6.8 | Supported by the Arch build |
+| Kubuntu 24.04 LTS / Plasma 5 | Not supported |
+| Other Wayland compositors | Not supported |
 
-## Compatibility
+The Rust daemon captures the default PulseAudio monitor (including PipeWire's PulseAudio compatibility service) and sends analyzed audio telemetry over a private Unix socket. A native KWin effect renders the visualization. This is necessary on Wayland, where ordinary applications cannot replace the global cursor.
+
+## Install on Kubuntu 26.04 or 26.10
+
+Release builds target Ubuntu 26.04 and 26.10 on `amd64`. Download the package matching your Ubuntu/Kubuntu release from the [latest release](https://github.com/simonskrede/pulsepointer/releases) and install it.
+
+For example, on 26.04:
+
+```bash
+sudo apt install ./pulsepointer_0.2.1-1+ubuntu26.04_amd64.deb
+```
+
+On 26.10, choose the package whose filename contains `ubuntu26.10` instead.
+
+For a Plasma X11 session, install both packages:
+
+```bash
+sudo apt install ./pulsepointer_0.2.1-1+ubuntu26.04_amd64.deb \
+  ./pulsepointer-kwin-x11_0.2.1-1+ubuntu26.04_amd64.deb
+```
+
+Log out and back in once so KWin discovers the native effect. The package enables the effect and the `pulsepointer.service` user service by default.
+
+## Install on Arch Linux
+
+PulsePointer supports Arch Linux and compatible Arch-based distributions through a dedicated installation script.
+
+Unlike the Ubuntu packages, the Arch installation builds PulsePointer locally against the KWin development files installed on the target system. This avoids compatibility problems caused by distributing native KWin effect binaries built against a different KWin ABI.
+
+### Compatibility
 
 | Component | Supported versions |
 |---|---|
@@ -28,15 +58,11 @@ This fork adapts the original project for Arch Linux and Arch-based distribution
 | Wayland | Supported |
 | X11 | Build and installation path included; practical testing pending |
 
-**Tested configuration:** CachyOS, KDE Plasma 6, KWin 6.8.2, Wayland.
-
-KWin effects use native APIs and are tied to the KWin version against which they are built. PulsePointer is therefore compiled locally against the installed KWin development files.
-
-Rebuild PulsePointer after significant KWin upgrades if necessary.
+Tested configuration: CachyOS, KDE Plasma 6, KWin 6.8.2, Wayland.
 
 Other Wayland compositors are not supported.
 
-## Installation
+KWin effects use native APIs and are tied to the KWin version against which they are built. Rebuild PulsePointer after significant KWin upgrades if necessary.
 
 ### Requirements
 
@@ -49,13 +75,16 @@ Other Wayland compositors are not supported.
 
 ### Quick start
 
+Clone the repository and run the installer:
+
 ```bash
-git clone https://github.com/bequietbro/pulsepointer-arch.git
-cd pulsepointer-arch
+git clone https://github.com/simonskrede/pulsepointer.git
+cd pulsepointer
 ./install.sh
 ```
 
 The installer automatically:
+
 1. Detects the Linux distribution and graphical session.
 2. Installs the required build dependencies using pacman.
 3. Checks the build environment.
@@ -77,7 +106,7 @@ Open:
 
 You can configure the visualization mode, intensity, responsiveness, beat ring, color, and overlay size.
 
-## Uninstallation
+### Uninstallation
 
 Run the same installer:
 
@@ -89,36 +118,113 @@ Select **Uninstall PulsePointer** from the interactive menu.
 
 The uninstaller removes PulsePointer's installed files, restores previously backed-up files, and cleans up its installation records.
 
-**System dependencies are intentionally preserved.**
+System dependencies are intentionally preserved.
 
 Rust, Cargo, CMake, Ninja, Qt, KDE Frameworks, KWin, and other system packages are never automatically removed.
 
 The source repository and user configuration are also left untouched.
 
-## Building and installation details
+### Building and installation details
 
-Unlike the original Ubuntu distribution, this fork does not provide `.deb` packages or use APT.
-
-The installer builds the project directly on the target machine using the locally installed development libraries and tools.
+The Arch installer builds the project directly on the target machine using the locally installed development libraries and tools.
 
 This approach avoids distributing KWin effect binaries built against a different distribution or KWin ABI.
 
 The installation is local and does not require an AUR package, a third-party package repository, or a prebuilt binary release.
 
-## Original project
+## Configure the effect
 
-This repository is a community-maintained Arch Linux fork of the original project:
+Open System Settings, search for Desktop Effects, find PulsePointer, and select its configure button.
 
-**[simonskrede/pulsepointer](https://github.com/simonskrede/pulsepointer)**
+The GUI controls the mode, intensity, responsiveness, beat ring, color, and overlay size. Changes apply without restarting the daemon.
 
-The original project provides the Rust daemon, native KWin effect, visualization modes, and configuration interface.
+The daemon itself has only audio-input and diagnostic options:
 
-This fork focuses on Arch Linux compatibility, KWin version compatibility, local compilation, and automated installation and uninstallation.
+```text
+pulsepointer [OPTIONS]
 
-Upstream contributions are welcome.
+      --source <SOURCE>  PulseAudio source to capture instead of @DEFAULT_MONITOR@
+      --log-levels       Log the normalized audio level once per second
+```
+
+To pass an option to the packaged service, run:
+
+```bash
+systemctl --user edit pulsepointer
+```
+
+Add, for example:
+
+```ini
+[Service]
+ExecStart=
+ExecStart=/usr/bin/pulsepointer --source alsa_output.example.monitor
+```
+
+Then run:
+
+```bash
+systemctl --user restart pulsepointer
+```
+
+The environment variables `PULSEPOINTER_SOURCE` and `PULSEPOINTER_LOG=1` remain supported as alternatives.
+
+## Build packages on Kubuntu 26.04 or 26.10
+
+Build on the same fully updated Ubuntu/Kubuntu release and architecture as the systems that will install the package. A native KWin effect is tied to the exact KWin ABI against which it was built.
+
+Source builds support both KWin 6.6 and 6.7. The effect detects the available image-item API at compile time, and CI builds on Ubuntu 26.04 and 26.10. Rebuild the native effect after upgrading KWin, even when the source is compatible.
+
+Install the complete top-level build requirements for the Wayland package:
+
+```bash
+sudo apt update
+sudo apt install build-essential ca-certificates cargo cmake extra-cmake-modules \
+  kwin-dev libkf6kcmutils-dev libpulse-dev ninja-build pkg-config
+```
+
+`kwin-dev` supplies its required Qt 6, KF6 Config/CoreAddons, Epoxy, and Wayland development dependencies. `build-essential` supplies the C/C++ and Debian package toolchain. The first build also needs access to crates.io unless the locked Rust dependencies are already cached.
+
+To build the optional X11 package too, also install:
+
+```bash
+sudo apt install kwin-x11-dev
+```
+
+Build only the main Wayland package:
+
+```bash
+./packaging/build-deb.sh --wayland-only
+```
+
+Or build the Wayland and X11 packages together:
+
+```bash
+./packaging/build-deb.sh
+```
+
+The script does not install anything and writes native-architecture packages to `dist/`. GitHub's release workflow runs this build for Ubuntu 26.04 and 26.10 on `amd64`. Release revisions and additional distribution targets are documented in [distribution-packaging.md](distribution-packaging.md).
+
+## Development checks
+
+Install `rust-clippy` and `rustfmt` in addition to the package-build requirements, then run:
+
+```bash
+cargo fmt --check
+cargo clippy --locked --all-targets -- --deny warnings
+cargo test --locked
+./packaging/build-deb.sh --wayland-only
+```
+
+The IPC format is documented in [ipc-protocol.md](ipc-protocol.md).
+
+## Scope and security
+
+- KDE Plasma 6 is required; other Wayland compositors need their own native integration.
+- IPC stays under `$XDG_RUNTIME_DIR` with user-only permissions.
+- KWin restores its native cursor if telemetry becomes stale, the screen locks, or the effect unloads.
+- The default input is mixed system output, not the microphone.
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
-
-Original project: [PulsePointer](https://github.com/simonskrede/pulsepointer).
+MIT
